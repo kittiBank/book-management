@@ -11,7 +11,7 @@ const parseId = (id) => {
   return parsed;
 };
 
-// Validate data for create book
+// Validate data for creating a book.
 const validateCreatePayload = (data) => {
   const title = data?.title;
   const author = data?.author;
@@ -48,7 +48,7 @@ const validateCreatePayload = (data) => {
   };
 };
 
-// Validate data for update book
+// Validate data for updating a book.
 const validateUpdatePayload = (data) => {
   const payload = {};
   if ("title" in data) {
@@ -74,7 +74,7 @@ const validateUpdatePayload = (data) => {
   return payload;
 };
 
-// To find active book
+// Find active book by id
 const findActiveBookOrThrow = async (id) => {
   const book = await prisma.book.findFirst({
     where: { id, isDelete: false },
@@ -87,29 +87,52 @@ const findActiveBookOrThrow = async (id) => {
   return book;
 };
 
-// To get all books
-const getAllBooks = async () => {
-  const books = await prisma.book.findMany({
-    where: { isDelete: false },
-    orderBy: { id: "desc" },
-  });
-  return books;
+// Normalize pagination parameters with defaults.
+const parsePagination = (query = {}) => {
+  const parsedPage = Number.parseInt(query.page, 10);
+  const parsedLimit = Number.parseInt(query.limit, 10);
+  const page = Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+  const limit =
+    Number.isInteger(parsedLimit) && parsedLimit > 0
+      ? Math.min(parsedLimit, 100)
+      : 10;
+  return { page, limit, skip: (page - 1) * limit };
 };
 
-// To get book by ID
+// Get all active books with pagination.
+const getAllBooks = async (query) => {
+  const { page, limit, skip } = parsePagination(query);
+  const where = { isDelete: false };
+  const [books, total] = await Promise.all([
+    prisma.book.findMany({
+      where,
+      orderBy: { id: "desc" },
+      skip,
+      take: limit,
+    }),
+    prisma.book.count({ where }),
+  ]);
+  const totalPages = Math.ceil(total / limit);
+  return {
+    data: books,
+    meta: { page, limit, total, totalPages },
+  };
+};
+
+// Get book by id.
 const getBookById = async (id) => {
   const bookId = parseId(id);
   return findActiveBookOrThrow(bookId);
 };
 
-// To create new book
+// Create a new book.
 const createBook = async (bookData) => {
   const data = validateCreatePayload(bookData);
   const book = await prisma.book.create({ data });
   return book;
 };
 
-// To update book
+// Update book by id.
 const updateBook = async (id, bookData) => {
   const bookId = parseId(id);
   await findActiveBookOrThrow(bookId);
@@ -121,7 +144,7 @@ const updateBook = async (id, bookData) => {
   return book;
 };
 
-// To delete book
+// Soft delete book by id.
 const deleteBook = async (id) => {
   const bookId = parseId(id);
   await findActiveBookOrThrow(bookId);
