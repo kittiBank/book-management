@@ -11,6 +11,8 @@
  *   get:
  *     tags: [Books]
  *     summary: Get all books
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of books
@@ -52,6 +54,8 @@
  *   get:
  *     tags: [Books]
  *     summary: Get a book by ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -117,6 +121,8 @@
  *   post:
  *     tags: [Books]
  *     summary: Create a new book
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -190,6 +196,8 @@
  *   put:
  *     tags: [Books]
  *     summary: Update a book by ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -274,6 +282,8 @@
  *   delete:
  *     tags: [Books]
  *     summary: Delete a book by ID
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
