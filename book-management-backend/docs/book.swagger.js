@@ -13,39 +13,70 @@
  *     summary: Get all books
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *         description: Items per page
  *     responses:
  *       200:
  *         description: List of books
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     example: 1
- *                   title:
- *                     type: string
- *                     example: Java programming
- *                   author:
- *                     type: string
- *                     example: Robert C. Martin
- *                   genre:
- *                     type: string
- *                     example: Programming
- *                   publishedYear:
- *                     type: integer
- *                     example: 2008
- *                   isDelete:
- *                     type: boolean
- *                     example: false
- *                   deletedAt:
- *                     type: string
- *                     format: date-time
- *                     nullable: true
- *                     example: null
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: integer
+ *                         example: 1
+ *                       title:
+ *                         type: string
+ *                         example: Java programming
+ *                       author:
+ *                         type: string
+ *                         example: Robert C. Martin
+ *                       genre:
+ *                         type: string
+ *                         example: Programming
+ *                       publishedYear:
+ *                         type: integer
+ *                         example: 2008
+ *                       isDelete:
+ *                         type: boolean
+ *                         example: false
+ *                       deletedAt:
+ *                         type: string
+ *                         format: date-time
+ *                         nullable: true
+ *                         example: null
+ *                 meta:
+ *                   type: object
+ *                   properties:
+ *                     page:
+ *                       type: integer
+ *                       example: 1
+ *                     limit:
+ *                       type: integer
+ *                       example: 10
+ *                     total:
+ *                       type: integer
+ *                       example: 25
+ *                     totalPages:
+ *                       type: integer
+ *                       example: 3
  */
 
 /**

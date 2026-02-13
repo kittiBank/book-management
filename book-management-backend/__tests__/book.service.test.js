@@ -6,6 +6,7 @@ jest.mock("../prisma/client", () => ({
   book: {
     findMany: jest.fn(),
     findFirst: jest.fn(),
+    count: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
@@ -22,14 +23,23 @@ describe("book.service CRUD", () => {
     it("returns active books", async () => {
       const books = [{ id: 2 }, { id: 1 }];
       prisma.book.findMany.mockResolvedValue(books);
+      prisma.book.count.mockResolvedValue(2);
 
-      const result = await bookService.getAllBooks();
+      const result = await bookService.getAllBooks({ page: "1", limit: "10" });
 
       expect(prisma.book.findMany).toHaveBeenCalledWith({
         where: { isDelete: false },
         orderBy: { id: "desc" },
+        skip: 0,
+        take: 10,
       });
-      expect(result).toEqual(books);
+      expect(prisma.book.count).toHaveBeenCalledWith({
+        where: { isDelete: false },
+      });
+      expect(result).toEqual({
+        data: books,
+        meta: { page: 1, limit: 10, total: 2, totalPages: 1 },
+      });
     });
   });
 
