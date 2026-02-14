@@ -29,17 +29,11 @@ const successMessage = ref("");
 
 // Genre options for dropdown
 const genreOptions = [
-  "Programming",
-  "Software Engineering",
-  "Web Development",
-  "Backend Development",
-  "Database",
-  "DevOps",
-  "Security",
-  "Machine Learning",
-  "Fiction",
-  "Non-Fiction",
-  "Other",
+  "เรื่องทั่วไป",
+  "ปรัชญา",
+  "คณิตศาสตร์",
+  "วิทยาศาสตร์",
+  "การแพทย์",
 ];
 
 // Fetch book data if in edit mode

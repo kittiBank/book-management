@@ -24,3 +24,26 @@ export interface ApiResponse<T> {
   message?: string;
   error?: string;
 }
+
+// Pagination info from API
+export interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+// Paginated API response
+export interface PaginatedResponse<T> {
+  success: boolean;
+  data?: T[];
+  pagination?: PaginationInfo;
+  message?: string;
+  error?: string;
+}
+
+// Query params for fetching books
+export interface BookQueryParams {
+  page?: number;
+  limit?: number;
+}

@@ -2,6 +2,7 @@
 import { ref, computed, watch } from "vue";
 import type { Book } from "@/types";
 import Pagination from "@/components/Pagination.vue";
+import { authService } from "@/services";
 
 // Props definition
 interface Props {
@@ -15,6 +16,10 @@ const emit = defineEmits<{
   (e: "edit", id: number): void;
   (e: "delete", id: number): void;
 }>();
+
+// Get current user
+const user = authService.getUser();
+const isAdmin = user && user.role === 'admin';
 
 // Pagination state
 const currentPage = ref(1);
@@ -35,9 +40,6 @@ watch(
   },
 );
 
-/**
- * Format date string to readable format
- */
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr);
   return date.toLocaleDateString("th-TH", {
@@ -150,6 +152,7 @@ const formatDate = (dateStr: string): string => {
               </svg>
             </button>
             <button
+              v-if="isAdmin"
               @click="emit('edit', book.id)"
               class="text-yellow-600 hover:text-yellow-900 mx-1"
               title="Edit"
@@ -169,6 +172,7 @@ const formatDate = (dateStr: string): string => {
               </svg>
             </button>
             <button
+              v-if="isAdmin"
               @click="emit('delete', book.id)"
               class="text-red-600 hover:text-red-900 mx-1"
               title="Delete"

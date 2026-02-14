@@ -70,13 +70,13 @@ const login = async (payload) => {
     throw error;
   }
   const token = jwt.sign(
-    { userId: user.id, username: user.username },
+    { userId: user.id, username: user.username, role: user.role},
     getJwtSecret(),
     { expiresIn: getJwtExpiresIn() },
   );
   return {
     token,
-    user: { id: user.id, username: user.username },
+    user: { id: user.id, username: user.username, role: user.role },
   };
 };
 

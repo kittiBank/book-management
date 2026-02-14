@@ -3,6 +3,7 @@ export interface User {
   id: number;
   username: string;
   email: string;
+  role: string; // e.g., 'admin' or 'user'
 }
 
 // define type login
