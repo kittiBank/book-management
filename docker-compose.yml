@@ -1,5 +1,7 @@
 version: '3.8'
 
+
+
 services:
   postgres:
     image: postgres:15-alpine
@@ -31,6 +33,36 @@ services:
       - book-network
     depends_on:
       - postgres
+
+  backend:
+    build:
+      context: ./book-management-backend
+    container_name: book-management-backend
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./book-management-backend:/app
+    networks:
+      - book-network
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./book-management-frontend
+    container_name: book-management-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./book-management-frontend:/app
+    networks:
+      - book-network
+    depends_on:
+      - backend
 
 networks:
   book-network:
