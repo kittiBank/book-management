@@ -2,9 +2,11 @@ import type { LoginCredentials, LoginResponse, User } from "@/types";
 import { mockUser, mockCredentials, mockToken } from "@/mocks";
 
 // Flag use mock data
-const USE_MOCK = true;
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 
-// const API_BASE_URL = '/api/auth';
+// API Base URL from .env
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 // local storage keys
 const TOKEN_KEY = "auth_token";
@@ -44,15 +46,43 @@ export const authService = {
       };
     }
 
-    // TODO: Implement real API call
-    // const response = await axios.post(`${API_BASE_URL}/login`, credentials);
-    // if (response.data.success) {
-    //   localStorage.setItem(TOKEN_KEY, response.data.token);
-    //   localStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
-    // }
-    // return response.data;
+    // call auth api
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
 
-    return { success: false, message: "API not implemented" };
+      const data = await response.json();
+
+      if (response.ok && data.token) {
+        // Store token in localStorage
+        localStorage.setItem(TOKEN_KEY, data.token);
+        if (data.user) {
+          localStorage.setItem(USER_KEY, JSON.stringify(data.user));
+        }
+
+        return {
+          success: true,
+          token: data.token,
+          user: data.user,
+        };
+      }
+
+      return {
+        success: false,
+        message: data.message || "Login failed",
+      };
+    } catch (error) {
+      console.error("Login error:", error);
+      return {
+        success: false,
+        message: "Network error. Please try again.",
+      };
+    }
   },
 
   // logout user
@@ -80,25 +110,5 @@ export const authService = {
   isAuthenticated(): boolean {
     const token = this.getToken();
     return !!token;
-  },
-
-  // validate token is valid
-  async validateToken(): Promise<boolean> {
-    if (USE_MOCK) {
-      // In mock mode, just check if token exists
-      return this.isAuthenticated();
-    }
-
-    // TODO: Implement real API call to validate token
-    // try {
-    //   const response = await axios.get(`${API_BASE_URL}/validate`, {
-    //     headers: { Authorization: `Bearer ${this.getToken()}` }
-    //   });
-    //   return response.data.valid;
-    // } catch {
-    //   return false;
-    // }
-
-    return false;
   },
 };
