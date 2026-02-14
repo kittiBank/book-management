@@ -99,10 +99,28 @@ const parsePagination = (query = {}) => {
   return { page, limit, skip: (page - 1) * limit };
 };
 
-// Get all active books with pagination.
-const getAllBooks = async (query) => {
-  const { page, limit, skip } = parsePagination(query);
+// Get all active books with pagination, or all if no page/limit specified.
+const getAllBooks = async (query = {}) => {
+  const hasPagination = query.page !== undefined || query.limit !== undefined;
   const where = { isDelete: false };
+  if (!hasPagination) {
+    const books = await prisma.book.findMany({
+      where,
+      orderBy: { id: "desc" },
+    });
+    return {
+      data: books,
+      meta: {
+        total: books.length,
+        page: 1,
+        limit: books.length,
+        totalPages: 1,
+      },
+    };
+  }
+
+  // specify pagination parameters with defaults
+  const { page, limit, skip } = parsePagination(query);
   const [books, total] = await Promise.all([
     prisma.book.findMany({
       where,
