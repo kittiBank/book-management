@@ -29,6 +29,7 @@ services:
     restart: always
     environment:
       DATABASE_URL: postgres://postgres:postgres@db:5432/bookdb
+      JWT_SECRET: book_management_secret_key
     ports:
       - "3000:3000"
     depends_on:
