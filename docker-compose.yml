@@ -1,73 +1,48 @@
-version: '3.8'
-
-
+version: "3.8"
 
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: book-management-db
+  db:
+    image: postgres:15
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: book_management
+      POSTGRES_DB: bookdb
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - book-network
+      - db_data:/var/lib/postgresql/data
 
   pgadmin:
-    image: dpage/pgadmin4:latest
-    container_name: book-management-pgadmin
+    image: dpage/pgadmin4
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
-    volumes:
-      - pgadmin_data:/var/lib/pgadmin
-    networks:
-      - book-network
     depends_on:
-      - postgres
+      - db
 
   backend:
-    build:
-      context: ./book-management-backend
-    container_name: book-management-backend
-    ports:
-      - "4000:4000"
+    build: ./book-management-backend
+    restart: always
     environment:
-      - NODE_ENV=development
-    volumes:
-      - ./book-management-backend:/app
-    networks:
-      - book-network
-    depends_on:
-      - postgres
-
-  frontend:
-    build:
-      context: ./book-management-frontend
-    container_name: book-management-frontend
+      DATABASE_URL: postgres://postgres:postgres@db:5432/bookdb
     ports:
       - "3000:3000"
-    environment:
-      - NODE_ENV=development
-    volumes:
-      - ./book-management-frontend:/app
-    networks:
-      - book-network
+    depends_on:
+      - db
+      - pgadmin
+    command: sh -c "npx prisma migrate deploy && node index.js"
+
+  frontend:
+    build: ./book-management-frontend
+    restart: always
+    ports:
+      - "5173:5173"
     depends_on:
       - backend
 
-networks:
-  book-network:
-    driver: bridge
-
 volumes:
-  postgres_data:
-  pgadmin_data:
+  db_data:
