@@ -3,7 +3,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import type { Book } from "@/types";
-import { bookService } from "@/services";
+import { bookService, SweetAlertService } from "@/services";
 import BookCard from "@/components/BookCard.vue";
 import BookTable from "@/components/BookTable.vue";
 import ConfirmModal from "@/components/ConfirmModal.vue";
@@ -83,6 +83,12 @@ const confirmDelete = async () => {
     if (response.success) {
       // Remove book from local list
       books.value = books.value.filter((b) => b.id !== bookToDelete.value!.id);
+
+      await SweetAlertService.success({
+        title: "Deleted!",
+        text: "Book deleted successfully!",
+        timer: 2000,
+      });
     } else {
       errorMessage.value = response.error || "Failed to delete book";
     }

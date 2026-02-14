@@ -3,7 +3,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import type { Book } from "@/types";
-import { bookService } from "@/services";
+import { bookService, SweetAlertService } from "@/services";
 import ConfirmModal from "@/components/ConfirmModal.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
@@ -58,6 +58,12 @@ const confirmDelete = async () => {
   try {
     const response = await bookService.deleteBook(book.value.id);
     if (response.success) {
+      // Show success alert with progress bar (2 seconds)
+      await SweetAlertService.success({
+        title: 'Deleted!',
+        text: 'Book deleted successfully!',
+        timer: 2000,
+      });
       router.push({ name: "Books" });
     } else {
       errorMessage.value = response.error || "Failed to delete book";

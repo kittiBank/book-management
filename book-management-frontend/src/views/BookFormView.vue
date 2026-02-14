@@ -3,7 +3,7 @@
 import { ref, reactive, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import type { BookFormData } from "@/types";
-import { bookService } from "@/services";
+import { bookService, SweetAlertService } from "@/services";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
 const route = useRoute();
@@ -114,14 +114,19 @@ const handleSubmit = async () => {
     }
 
     if (response.success) {
-      successMessage.value = isEditMode.value
+      const message = isEditMode.value
         ? "Book updated successfully!"
         : "Book created successfully!";
 
-      // Redirect after short delay
-      setTimeout(() => {
-        router.push({ name: "Books" });
-      }, 1000);
+      // Show success alert with progress bar (2 seconds)
+      await SweetAlertService.success({
+        title: isEditMode.value ? 'Updated!' : 'Created!',
+        text: message,
+        timer: 2000,
+      });
+
+      // Redirect after alert closes
+      router.push({ name: "Books" });
     } else {
       errorMessage.value = response.error || "Operation failed";
     }
