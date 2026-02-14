@@ -21,14 +21,24 @@ A simple and modern web application for managing books, built with a full-stack 
 
 ## How to Run
 
+
 1. **Clone the repository**
    ```bash
    git clone https://github.com/kittiBank/book-management.git
    cd book-management
    ```
 
-2. **Start with Docker Compose**
-   ** Must install docker in your computer, docker will be run front-end, back-end, database with command belown.
+2. **Copy environment file**
+   - Go to the backend folder
+   - Copy the file `.env.example` to `.env.development`
+   ```bash
+   cd book-management-backend
+   cp .env.example .env.development
+   cd ..
+   ```
+
+3. **Start with Docker Compose**
+   ** Make sure Docker is installed on your machine. Then use this command to run all services (frontend, backend, database) at once:
    ```bash
    docker-compose up --build
    ```
