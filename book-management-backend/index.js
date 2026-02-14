@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 require("dotenv").config();
 const app = express();
 const bookRoutes = require("./routes/book.routes");
@@ -10,6 +11,7 @@ const swaggerJSDoc = require("swagger-jsdoc");
 
 const PORT = 3000;
 
+app.use(cors());
 app.use(express.json());
 app.use(loggerMiddleware.logRequests);
 
