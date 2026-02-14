@@ -1,5 +1,7 @@
+
 <script setup lang="ts">
 import type { Book } from "@/types";
+import { authService } from "@/services";
 
 // Props definition
 interface Props {
@@ -13,6 +15,10 @@ const emit = defineEmits<{
   (e: "edit", id: number): void;
   (e: "delete", id: number): void;
 }>();
+
+// Get current user
+const user = authService.getUser();
+const isAdmin = user && user.role === 'admin';
 </script>
 
 <template>
@@ -54,12 +60,14 @@ const emit = defineEmits<{
         View
       </button>
       <button
+        v-if="isAdmin"
         @click="emit('edit', book.id)"
         class="flex-1 bg-amber-400 hover:bg-amber-500 text-white px-3 py-1 rounded text-sm transition-colors"
       >
         Edit
       </button>
       <button
+        v-if="isAdmin"
         @click="emit('delete', book.id)"
         class="flex-1 bg-red-400 hover:bg-red-500 text-white px-3 py-1 rounded text-sm transition-colors"
       >

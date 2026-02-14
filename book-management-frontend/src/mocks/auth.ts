@@ -4,7 +4,8 @@ import type { User } from '@/types';
 export const mockUser: User = {
   id: 1,
   username: 'admin',
-  email: 'admin@bookmanagement.com'
+  email: 'admin@bookmanagement.com',
+  role: 'admin',
 };
 
 export const mockCredentials = {
