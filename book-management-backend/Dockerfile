@@ -1,27 +1,21 @@
-# Use official Node.js image as the base
-FROM node:18
+# Use official Node.js 20 image as the base
+FROM node:20
 
 # Set working directory
 WORKDIR /app
 
+
 # Copy package.json and package-lock.json
 COPY package*.json ./
-
-# Install dependencies
-RUN npm install
 
 # Copy the rest of the application code
 COPY . .
 
-# Expose the port the app runs on
+# Install dependencies (after all files are copied)
+RUN npm install
+
+# Expose port 3000
 EXPOSE 3000
 
-# Default command (overridden by docker-compose)
-# Use official Node.js image for backend
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-EXPOSE 4000
-CMD ["npm", "run", "dev"]
+# Wait for the database to be ready, run migrations, seed users, then start the app
+CMD ["sh", "-c", "npx prisma migrate deploy && node prisma/seed.js && node index.js"]

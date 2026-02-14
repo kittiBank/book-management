@@ -1,21 +1,20 @@
-# Use official Node.js image as the base
-FROM node:18
+# Use official Node.js 20 image as the base
+FROM node:20
 
+# Set working directory
 WORKDIR /app
 
+# Copy package.json and package-lock.json
 COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
+# Copy the rest of the application code
 COPY . .
 
-EXPOSE 8080
+# Expose frontend port
+EXPOSE 5713
 
-CMD ["npm", "run", "serve"]
-# Use official Node.js image for frontend
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-EXPOSE 3000
-CMD ["npm", "run", "dev"]
+# Start frontend on port 5173 and allow external access
+CMD ["npm", "run", "dev", "--", "--port", "5173", "--host"]
