@@ -30,7 +30,7 @@ A simple and modern web application for managing books, built with a full-stack 
 
 2. **Copy environment file**
    - Go to the backend folder
-   - Copy the file `.env.example` to `.env.development`
+   - Copy the file `.env.example` rename to `.env.development`
    ```bash
    cd book-management-backend
    cp .env.example .env.development
