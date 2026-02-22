@@ -56,7 +56,7 @@ async function main() {
       genre: "Psychology",
     },
     {
-      title: "Harry Potter and the Sorcerer's Stone",
+      title: "Harry Potter 1",
       author: "J.K. Rowling",
       publishedYear: 1997,
       genre: "Fantasy",
