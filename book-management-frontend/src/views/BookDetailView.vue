@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // Book-detail page
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import type { Book } from "@/types";
-import { bookService, SweetAlertService } from "@/services";
+import { bookService, SweetAlertService, authService } from "@/services";
 import ConfirmModal from "@/components/ConfirmModal.vue";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
 
@@ -17,6 +17,10 @@ const errorMessage = ref("");
 
 // Delete modal state
 const showDeleteModal = ref(false);
+
+// Check if user is admin
+const user = ref(authService.getUser());
+const isAdmin = computed(() => user.value?.role === "admin");
 
 // Fetch book details by ID
 const fetchBook = async () => {
@@ -145,6 +149,7 @@ onMounted(() => {
         <!-- Action Buttons -->
         <div class="flex space-x-3 mt-4 md:mt-0">
           <button
+            v-if="isAdmin"
             @click="handleEdit"
             class="flex items-center bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition-colors"
           >
@@ -164,6 +169,7 @@ onMounted(() => {
             Edit
           </button>
           <button
+            v-if="isAdmin"
             @click="showDeleteModal = true"
             class="flex items-center bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
           >
